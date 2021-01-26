@@ -28,28 +28,9 @@ const styles = StyleSheet.create({
 class MainScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.handleLatChange = this.handleLatChange.bind(this);
-    this.handleLonChange = this.handleLonChange.bind(this);
     this.state = {
-      lat:this.props.navigation.getParam('lat') || 35.962691,
-      lon:this.props.navigation.getParam('lon') ||126.97894,
-    }
-  }
-
-  handleLatChange(input) {
-    this.setState({lat: input});
-  }
-
-  handleLonChange(input) {
-    this.setState({lon: input});
-  }
-
-  componentDidMount() {
-    const lat = this.props.navigation.getParam('lat');
-    const lon = this.props.navigation.getParam('lon');
-    if(lat != null && lon != null){
-      this.setState({lat: lat});
-      this.setState({lon: lon});
+      lat:35.962691,
+      lon:126.97894,
     }
   }
 
@@ -58,12 +39,23 @@ class MainScreen extends React.Component {
       return {
         headerLeft: () => <Image source={require('./assets/logo.jpg')} style={styles.iconImg} />,
         title: <Text style={styles.text}>9585부대 CSMap</Text>,
-        headerRight: () => <SearchBtn navigation={navigation} onLatChange={this.handleLatChange} onLonChange= {this.handleLonChange}/>,
+        headerRight: () =>
+        (
+          <TouchableOpacity onPress={() => navigation.navigate('Search', {
+            onLatChange:this.handleLatChange,
+            onLonChange:this.handleLonChange,
+          })}>
+            <Icon name='ios-search' style={{ paddingRight: 10 }} />
+          </TouchableOpacity>
+        ),
         headerTitleAlign: 'center', 
       }
   }
 
   render() {
+    const new_lat = this.props.navigation.getParam('lat');
+    const new_lon = this.props.navigation.getParam('lon');
+    alert((new_lat === undefined) ? this.state.lat : new_lat);
     return (
         <MapView
             style={{ flex: 1 }}
@@ -73,8 +65,8 @@ class MainScreen extends React.Component {
             minZoomLevel={13}
             maxZoomLevel={20}
             initialRegion={{
-                latitude: this.state.lat,
-                longitude: this.state.lon,
+                latitude: (new_lat === undefined) ? this.state.lat : new_lat,
+                longitude: (new_lon === undefined) ? this.state.lon : new_lon,
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
             }}

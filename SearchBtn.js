@@ -6,10 +6,7 @@ import { withNavigation } from 'react-navigation';
 class SearchBtn extends React.Component {
     render() {
         return (
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('Search', {
-                onLatChange:this.props.onLatChange,
-                onLonChange:this.props.onLonChange,
-            })}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('Search')}>
                 <Icon name='ios-search' style={{ paddingRight: 10 }} />
             </TouchableOpacity>
         );

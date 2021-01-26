@@ -1,9 +1,10 @@
 /*
 구현 해야될 리스트
 
-1. 검색 스크린 리스트에 CCTV번호를 title로 주소나 CCTV종류를 description으로 만들기
-2. 클릭시 위도, 경도 변경
-3. 클릭시 변경 후 맵으로 자동 이동 goback()
+1. 검색 스크린 리스트에 CCTV번호를 title로 주소나 CCTV종류를 description으로 만들기  (완료)
+2. 검색하면 리스트에 조건에 맞는 대상들 나오게 하기 (완료)
+3. 클릭시 위도, 경도 변경 (..ing)
+4. 클릭시 변경 후 맵으로 자동 이동 goback()
 
 */
 // https://aboutreact.com/react-native-search-bar-filter-on-listview/
@@ -18,7 +19,7 @@ import { SearchBar } from 'react-native-elements';
 import iksonData from './ikson.json';
 
 const SearchScreen = (props) => {
-  const { navigation } = props;
+  const { navigation, route } = props;
   const [search, setSearch] = useState('');
   //filter했을 때 나오는 리스트
   const [filteredDataSource, setFilteredDataSource] = useState([]);
@@ -36,11 +37,9 @@ const SearchScreen = (props) => {
       // Inserted text is not blank
       // Filter the masterDataSource
       // Update FilteredDataSource
-      const newData = masterDataSource.filter(function (item) {
-        const itemData = item.title
-          ? item.title.toUpperCase()
-          : ''.toUpperCase();
-        const textData = text.toUpperCase();
+      const newData = masterDataSource.filter(function (item) { //CCTV 카메라 넘버로 검색
+        const itemData = String(item.id);
+        const textData = text;
         return itemData.indexOf(textData) > -1;
       });
       setFilteredDataSource(newData);
@@ -58,12 +57,10 @@ const SearchScreen = (props) => {
     return (
       // Flat List Item
       <Text style={styles.itemStyle} onPress={() => getItem(item)}>
-        <View style={{ alignItems: "center", flex: 1 }}>
-          <TouchableOpacity>
+        <View style={{ flex: 1 }}>
             <Text style={{ fontWeight: "bold" }}>{item.id + "번 CCTV"}</Text>
             <Text>{'주소: ' + item.lotAddress}</Text>
             <Text>{'목적: ' + item.purpose}</Text>
-          </TouchableOpacity>
         </View>
       </Text>
     );
@@ -83,9 +80,13 @@ const SearchScreen = (props) => {
   };
 
   const getItem = (item) => {
-    const lon = navigation.getParam("onLonChange");
-    alert(lon);
-    props.onLonChange(item.longitude);
+    navigation.navigate('Main', {
+      lat:item.latitude,
+      lon:item.longitude,
+    })
+
+    // alert(navigation.state.params.onLatChange);
+    // navigation.goBack();
   };
 
 
@@ -98,7 +99,7 @@ const SearchScreen = (props) => {
           searchIcon={{ size: 24 }}
           onChangeText={(text) => searchFilterFunction(text)}
           onClear={(text) => searchFilterFunction('')}
-          placeholder="Type Here..."
+          placeholder="보고싶은 CCTV 번호를 입력해주세요."
           value={search}
         />
         <FlatList
