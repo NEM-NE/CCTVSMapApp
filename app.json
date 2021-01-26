@@ -17,9 +17,19 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.brigade.cctv",
+      "config": {
+        "googleMapsApiKey": "AIzaSyDVuQcMkkSak437ZH8OtI7MIAq4uMDKCFg"
+      },
       "supportsTablet": true
     },
     "android": {
+      "package": "com.brigade.cctv",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDpB4bQ2yRHRgqwU7pxk4G-NU63i1jl9_o"
+        }
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
@@ -27,6 +37,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "packagerOpts": {
+      "port": 55727
     }
   }
 }
