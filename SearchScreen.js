@@ -81,8 +81,12 @@ const SearchScreen = (props) => {
 
   const getItem = (item) => {
     navigation.navigate('Main', {
-      lat:item.latitude,
-      lon:item.longitude,
+      region:{
+        latitude:item.latitude,
+        longitude:item.longitude,
+        latitudeDelta: 0.0022,
+        longitudeDelta: 0.0021,
+      }
     })
 
     // alert(navigation.state.params.onLatChange);
