@@ -3,8 +3,8 @@
 
 1. 검색 스크린 리스트에 CCTV번호를 title로 주소나 CCTV종류를 description으로 만들기  (완료)
 2. 검색하면 리스트에 조건에 맞는 대상들 나오게 하기 (완료)
-3. 클릭시 위도, 경도 변경 (..ing)
-4. 클릭시 변경 후 맵으로 자동 이동 goback()
+3. 클릭시 위도, 경도 변경 (완료)
+4. 클릭시 변경 후 맵으로 자동 이동 goback() (완료)
 
 */
 // https://aboutreact.com/react-native-search-bar-filter-on-listview/
