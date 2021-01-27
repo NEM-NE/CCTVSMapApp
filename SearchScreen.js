@@ -57,10 +57,10 @@ const SearchScreen = (props) => {
     return (
       // Flat List Item
       <Text style={styles.itemStyle} onPress={() => getItem(item)}>
-        <View style={{ flex: 1 }}>
-            <Text style={{ fontWeight: "bold" }}>{item.id + "번 CCTV"}</Text>
-            <Text>{'주소: ' + item.lotAddress}</Text>
-            <Text>{'목적: ' + item.purpose}</Text>
+        <View style={{ flex: 1}}>
+            <Text style={{ fontWeight: "bold", paddingTop: 25}}>{item.id + "번 CCTV"}</Text>
+            <Text style={{ paddingTop: 5}}>{'주소: ' + item.lotAddress}</Text>
+            <Text style={{ paddingTop: 5}}>{'목적: ' + item.purpose}</Text>
         </View>
       </Text>
     );
@@ -88,9 +88,6 @@ const SearchScreen = (props) => {
         longitudeDelta: 0.0021,
       }
     })
-
-    // alert(navigation.state.params.onLatChange);
-    // navigation.goBack();
   };
 
 
