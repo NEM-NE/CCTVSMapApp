@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Image, View, Text, TouchableOpacity, Button } from 'react-native';
 import { Icon } from 'native-base'; // 추가된 코드
 import { withNavigation, navigation } from 'react-navigation';
@@ -20,26 +20,23 @@ const styles = StyleSheet.create({
   }
 });
 
-function MainScreen(props) {
+function MapScreen(props) {
   const [region, setRegion] = useState({
     latitude: 35.962691,
     longitude: 126.97894,
     latitudeDelta: 0.0322,
     longitudeDelta: 0.0321,
   });
+  const [findRegion, setFindRegion] = useState({
+    latitude: null,
+    longitude: null,
+    latitudeDelta: null,
+    longitudeDelta: null,
+  });
   const [showVehicleReader, setShowVehicleReader] = useState(-1);
   const [btnTitle, setBtnTitle] = useState('차량용 판독기만 보기');
-  const [initRegion, setInitRegion] = useState({
-    latitude: 35.962691,
-    longitude: 126.97894,
-    latitudeDelta: 0.0322,
-    longitudeDelta: 0.0321,
-  });
-
-  //search screen에서 받아온 region 객체
   const new_region = props.navigation.getParam('region');
   let markers;
-
 
   const handleBtnPress = () => {
     setShowVehicleReader((showVehicleReader === -1) ? 0 : -1);
@@ -117,9 +114,17 @@ function MainScreen(props) {
         style={{ flex: 1 }}
         zoomEnabled={true}
         provider={PROVIDER_GOOGLE}
-        mapType="hybrid"
+        mapType="standard"
         minZoomLevel={13}
         maxZoomLevel={19}
+        initialRegion={
+          {
+            latitude: 35.962691,
+            longitude: 126.97894,
+            latitudeDelta: 0.0322,
+            longitudeDelta: 0.0321,
+          }
+        }
         /*
         Problem!!!!!!
         문제: 차량용 판독기 버튼을 눌렀을 때 위치가 검색했던 위치나 기본 베이스 위치로 이동함
@@ -128,7 +133,7 @@ function MainScreen(props) {
         이를 해결하려고 onRegionChange가 이동할 때마다 region을 반환하기 때문에 이를 이용하려고 했지만
         region 속성에 있는 {new_region || region} 값과 충돌이 일어남
         */
-        region={region}
+        region={new_region || region}
       >
         {markers}
       </MapView>
@@ -144,7 +149,7 @@ function MainScreen(props) {
 }
 
 // navigationOptions 코드 추가
-MainScreen.navigationOptions = ({ navigation }) => {
+MapScreen.navigationOptions = ({ navigation }) => {
   return {
     headerLeft: () => <Image source={require('./assets/logo.jpg')} style={styles.iconImg} />,
     title: <Text style={styles.text}>9585부대 CSMap</Text>,
@@ -158,4 +163,4 @@ MainScreen.navigationOptions = ({ navigation }) => {
   }
 }
 
-export default withNavigation(MainScreen);
+export default withNavigation(MapScreen);
