@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Image, View, Text, TouchableOpacity, Button } from 'react-native';
-import { Icon } from 'native-base'; // 추가된 코드
-import { withNavigation } from 'react-navigation';
-
+import { StyleSheet, Image, View, TextInput, TouchableOpacity, Button,ScrollView,
+  Animated, Text
+ } from 'react-native';
+import { NavigationEvents, withNavigation } from 'react-navigation';
+import { Ionicons } from '@expo/vector-icons';
 import MapView, { Marker, PROVIDER_GOOGLE, MAP_TYPES } from 'react-native-maps';
 import iksonData from './ikson.json';
 import Loading from "./Loading";
@@ -19,25 +20,54 @@ const styles = StyleSheet.create({
     height: 30,
     padding: 10,
     marginLeft: 5,
-  }
+  },
+  searchBox: {
+    position:'absolute', 
+    marginTop: Platform.OS === 'ios' ? 40 : 20, 
+    flexDirection:"row",
+    backgroundColor: '#fff',
+    width: '90%',
+    alignSelf:'center',
+    borderRadius: 5,
+    padding: 10,
+    shadowColor: '#ccc',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 10,
+  },
+  chipsScrollView: {
+    position:'absolute', 
+    top:Platform.OS === 'ios' ? 90 : 80, 
+    paddingHorizontal:10
+  },
+  chipsIcon: {
+    marginRight: 5,
+  },
+  chipsItem: {
+    flexDirection:"row",
+    backgroundColor:'#fff', 
+    borderRadius:20,
+    padding:8,
+    paddingHorizontal:20, 
+    marginHorizontal:10,
+    height:35,
+    shadowColor: '#ccc',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 10,
+  },
+  scrollView: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingVertical: 10,
+  },
 });
 
-// navigationOptions 코드 추가
-MapScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: () => <Image source={require('./assets/logo.jpg')} style={styles.iconImg} />,
-    title: <Text style={styles.text}>9585부대 CSMap</Text>,
-    headerRight: () =>
-    (
-      <TouchableOpacity onPress={() => navigation.navigate('Search')}>
-        <Icon name='ios-search' style={{ paddingRight: 10 }} />
-      </TouchableOpacity>
-    ),
-    headerTitleAlign: 'center',
-  }
-}
-
-function MapScreen({route}) {
+function MapScreen({route, navigation}) {
   const [isLoading, setIsLoading] = useState(true);
   const [region, setRegion] = useState({
     latitude: 35.962691,
@@ -59,12 +89,17 @@ function MapScreen({route}) {
   let markers;
 
   useEffect(() => {
-    setTimeout(() => {setIsLoading(false)},3000);
+    setTimeout(() => {setIsLoading(false)},1000);
   })
 
   const handleBtnPress = () => {
     setShowVehicleReader((showVehicleReader === -1) ? 0 : -1);
     setBtnTitle((btnTitle === '차량용 판독기만 보기') ? '전체 보기' : '차량용 판독기만 보기');
+  }
+
+  const goSearch = (e) => {
+    e.preventDefault();
+    navigation.navigate('Search');
   }
 
   //  -1은 전체 0은 차량용 판독기만, 1은 차량용 판독기 제외
@@ -143,8 +178,8 @@ return (
       style={{ flex: 1 }}
       zoomEnabled={true}
       provider={PROVIDER_GOOGLE}
-      mapType="standard"
-      minZoomLevel={13}
+      mapType="hybrid"
+      minZoomLevel={9}
       maxZoomLevel={19}
       initialRegion={
         {
@@ -166,13 +201,47 @@ return (
     >
       {markers}
     </MapView>
-    <View>
-      <Button
-        title={btnTitle}
-        color="#f194ff"
-        onPress={handleBtnPress}
-      />
+    <View style={styles.searchBox}>
+        <TextInput 
+          placeholder="Search here"
+          placeholderTextColor="#000"
+          autoCapitalize="none"
+          style={{flex:1,padding:0}}
+          onFocus={(e) => 
+            goSearch(e)
+          }
+        />
+        <Ionicons name="ios-search" size={20} />
     </View>
+    <ScrollView
+        horizontal
+        scrollEventThrottle={1}
+        showsHorizontalScrollIndicator={false}
+        height={50}
+        style={styles.chipsScrollView}
+        contentInset={{ // iOS only
+          top:0,
+          left:0,
+          bottom:0,
+          right:20
+        }}
+        contentContainerStyle={{
+          paddingRight: Platform.OS === 'android' ? 20 : 0
+        }}
+      >
+          <TouchableOpacity key={0} style={styles.chipsItem} onPress={handleBtnPress}>
+          <Ionicons name="ios-car" style={styles.chipsIcon} size={18} />
+            <Text>{'차량용판독기 카메라 보기'}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity key={1} style={styles.chipsItem}>
+          <Ionicons name="ios-camera" style={styles.chipsIcon} size={18} />
+            <Text>{'전체 카메라 보기'}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity key={2} style={styles.chipsItem}>
+          <Ionicons name="navigate" style={styles.chipsIcon} size={18} />
+            <Text>{'현재 위치 보기'}</Text>
+          </TouchableOpacity>
+      </ScrollView>
   </View>
 );
   }

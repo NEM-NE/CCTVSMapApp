@@ -80,7 +80,7 @@ const SearchScreen = (props) => {
   };
 
   const getItem = (item) => {
-    navigation.navigate('Main', {
+    navigation.navigate('Home', {
       region:{
         latitude:item.latitude,
         longitude:item.longitude,
